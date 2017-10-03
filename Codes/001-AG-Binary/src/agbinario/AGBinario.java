@@ -16,6 +16,12 @@ public class AGBinario {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        
+        Individuo individuo = new Individuo(3, -2, 2, 5);
+        individuo.criar();
+        Problema.calcularFuncaoObjetivo(individuo);
+        System.out.println(individuo);
+        
     }
     
 }

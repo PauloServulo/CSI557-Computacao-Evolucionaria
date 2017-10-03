@@ -12,7 +12,7 @@ import java.util.Random;
  *
  * @author fernando
  */
-public class Individuo {
+public class Individuo implements Comparable<Individuo>{
     
     private ArrayList<Integer> cromossomos; //genotipo
     private ArrayList<Double> variaveis; //fenotipo
@@ -121,19 +121,34 @@ public class Individuo {
         for(int i = 0; i < this.getNvar(); i++) {
             valor = 0;
             for(int j = 0; j < this.getPrecisao(); j++) {
-                valor += Math.pow(2, this.getPrecisao() - j ) 
+                valor += Math.pow(2, this.getPrecisao() - j - 1) 
                         * this.cromossomos.get(i * this.getPrecisao()+j);                
             }
             
             this.decod.add(valor);
-            real = (valor * ((this.getMax() - this.getMin()) 
-                    / Math.pow(2, this.getPrecisao() - 1) )) 
+            real = valor;
+            real = real * ((this.getMax() - this.getMin()) 
+                    / (Math.pow(2, this.getPrecisao()) - 1.0) ) 
                     + this.getMin();
             this.variaveis.add(real);
             
         }
         
     }
+    
+    // Clone
+
+    @Override
+    public String toString() {
+        return "Individuo{" + "cromossomos=" + cromossomos + ", variaveis=" + variaveis + ", decod=" + decod + ", funcaoObjetivo=" + funcaoObjetivo + '}';
+    }
+
+    @Override
+    public int compareTo(Individuo o) {
+        return this.getFuncaoObjetivo()
+                .compareTo(o.getFuncaoObjetivo());
+    }
+    
     
     
     
