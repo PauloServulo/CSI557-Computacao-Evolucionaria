@@ -3,10 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package agbinario;
+package principal;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Random;
 import java.util.logging.Level;
@@ -23,25 +21,23 @@ public class AlgoritmoGenetico {
     double pMutacao;
     int geracoes;
 
-    int precisao;
     double min;
     double max;
     int nvar;
 
-    public AlgoritmoGenetico(int tamPop, double pCrossover, double pMutacao, int geracoes, int precisao, double min, double max, int nvar) {
+    Individuo melhorSolucao;
+    Populacao populacao;
+    Populacao novaPopulacao;
+
+    public AlgoritmoGenetico(int tamPop, double pCrossover, double pMutacao, int geracoes, double min, double max, int nvar) {
         this.tamPop = tamPop;
         this.pCrossover = pCrossover;
         this.pMutacao = pMutacao;
         this.geracoes = geracoes;
-        this.precisao = precisao;
         this.min = min;
         this.max = max;
         this.nvar = nvar;
     }
-
-    Individuo melhorSolucao;
-    Populacao populacao;
-    Populacao novaPopulacao;
 
     public Individuo getMelhorSolucao() {
         return melhorSolucao;
@@ -53,8 +49,8 @@ public class AlgoritmoGenetico {
 
     public void executar() {
 
-        populacao = new Populacao(precisao, min, max, nvar, tamPop);
-        novaPopulacao = new Populacao(precisao, min, max, nvar, tamPop);
+        populacao = new Populacao(min, max, nvar, tamPop);
+        novaPopulacao = new Populacao(min, max, nvar, tamPop);
 
         // Criar a populacao
         populacao.criarPopulacao();
@@ -158,7 +154,7 @@ public class AlgoritmoGenetico {
             Individuo pai2, Individuo filho) {
 
         Random rnd = new Random();
-        int corte = rnd.nextInt((this.nvar * this.precisao));
+        int corte = rnd.nextInt(pai1.getCromossomos().size());
 
 //        System.out.println(filho.getCromossomos().size());
 //        System.out.println(pai1.getCromossomos().size());        
@@ -180,16 +176,20 @@ public class AlgoritmoGenetico {
 
         Random rnd = new Random();
 
-        int bit;
+        double valor;
         for (int i = 0; i < filho.getCromossomos().size(); ++i) {
             if (rnd.nextDouble() <= this.pMutacao) {
-                bit = filho.getCromossomos().get(i);
-                if (bit == 0) {
-                    bit = 1;
-                } else {
-                    bit = 0;
+                valor = filho.getCromossomos().get(i) 
+                        * rnd.nextDouble();
+                
+                if (rnd.nextBoolean() == false) {
+                    valor = -valor;
                 }
-                filho.getCromossomos().set(i, bit);
+                valor = filho.getCromossomos().get(i) 
+                        + valor;
+                if ( valor >= this.min && valor <= this.max ) {
+                    filho.getCromossomos().set(i, valor);
+                }
             }
         }
 

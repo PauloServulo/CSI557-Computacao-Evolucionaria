@@ -3,25 +3,23 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package agbinario;
+package principal;
 
 /**
  *
  * @author fernando
  */
-public class AGBinario {
+public class AGReal {
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
 
         int tamPop = 100;
         double pCrossover = 0.8;
         double pMutacao = 0.05;
         int geracoes = 1000;
-        int precisao = 5;
         
         double min = -100.0;  
         double max = 100.0;
@@ -32,14 +30,12 @@ public class AGBinario {
                         pCrossover, 
                         pMutacao, 
                         geracoes, 
-                        precisao, 
                         min, max, nvar);
         // Processa o AG - min funcao
         ag.executar();
         Individuo melhor = ag.getMelhorSolucao();
         
-        System.out.println("Melhor solucao = " + melhor);
-        
+        System.out.println("Melhor solucao = " + melhor);        
     }
     
 }

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package agbinario;
+package principal;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,31 +14,21 @@ import java.util.List;
  * @author fernando
  */
 public class Populacao {
-    int precisao;
     double min;
     double max;
     int nvar;
+    int tamanho;
 
     public Populacao() {
     }
     
-    public Populacao(int precisao, double min, double max, int nvar, int tamanho) {
-        this.precisao = precisao;
+    public Populacao(double min, double max, int nvar, int tamanho) {
         this.min = min;
         this.max = max;
         this.nvar = nvar;
         this.tamanho = tamanho;
     }
     
-    int tamanho;
-
-    public int getPrecisao() {
-        return precisao;
-    }
-
-    public void setPrecisao(int precisao) {
-        this.precisao = precisao;
-    }
 
     public double getMin() {
         return min;
@@ -93,7 +83,7 @@ public class Populacao {
         
         for (int i = 0; i < this.getTamanho(); i++) {
             Individuo individuo = 
-                    new Individuo(precisao, min, max, nvar);
+                    new Individuo(min, max, nvar);
             individuo.criar();
             individuos.add(individuo);
             

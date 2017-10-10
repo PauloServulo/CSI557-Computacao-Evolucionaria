@@ -7,6 +7,8 @@ package agbinario;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -122,7 +124,8 @@ public class Individuo implements Comparable<Individuo>{
             valor = 0;
             for(int j = 0; j < this.getPrecisao(); j++) {
                 valor += Math.pow(2, this.getPrecisao() - j - 1) 
-                        * this.cromossomos.get(i * this.getPrecisao()+j);                
+                        * this.cromossomos.get(i * 
+                                this.getPrecisao()+j);                
             }
             
             this.decod.add(valor);
@@ -147,6 +150,22 @@ public class Individuo implements Comparable<Individuo>{
     public int compareTo(Individuo o) {
         return this.getFuncaoObjetivo()
                 .compareTo(o.getFuncaoObjetivo());
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        Individuo individuo = null;
+        //super.clone();
+        individuo =
+                new Individuo(this.getPrecisao(), 
+                        this.getMin(),
+                        this.getMax(),
+                        this.getNvar());
+        individuo.setCromossomos(new ArrayList<>(this.getCromossomos()));
+        individuo.setVariaveis(this.getVariaveis());
+        individuo.setDecod(this.getDecod());
+        individuo.setFuncaoObjetivo(this.getFuncaoObjetivo());
+        return individuo;        
     }
     
     
