@@ -27,3 +27,6 @@ hs_err_pid*
 /Codes/001-AG-Binary/dist/
 /Codes/002-AG-Real/nbproject/private/
 /Codes/002-AG-Real/build/
+/Codes/003-AG-TSP/nbproject/private/
+/Codes/003-AG-TSP/build/
+/Codes/003-AG-TSP/dist/
