@@ -19,6 +19,12 @@ public class AGTSP {
         Problema tsp = new Problema("/Users/fernando/Dropbox/Dados/Desenvolvimento/Netbeans/CSI557-Computacao-Evolucionaria/Codes/instances/tsplib/att48.tsp");
         System.out.println(tsp);
         
+        Individuo individuo = new Individuo(tsp.dimensao); 
+        individuo.criar();
+        
+        tsp.calcularFuncaoObjetivo(individuo);
+        System.out.println(individuo);
+        
     }
     
 }

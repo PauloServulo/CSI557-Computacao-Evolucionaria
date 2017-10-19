@@ -46,9 +46,9 @@ public class Problema {
             dados = linha.split(":");
             this.nomeDaInstancia = dados[1];
             
-            // Comentario
+            // Tipo de instancia
             linha = br.readLine();
-            // Tipo
+            // Comentario
             linha = br.readLine();
             
             // Dimensao
@@ -59,6 +59,8 @@ public class Problema {
             coordenadas = new Double[dimensao][2];
             distancias = new Double[dimensao][dimensao];
             
+            // Funcao de Calculo (ATT, EUC_2D, ...)
+            linha = br.readLine();
             // Cabecalho
             linha = br.readLine();
             
@@ -110,6 +112,19 @@ public class Problema {
         }
     }
 
+    public void calcularFuncaoObjetivo(Individuo individuo) {
+        Double custo = 0.0;
+        
+        for(int i = 0; i < this.dimensao - 1; i++) {
+            custo += this.distancias
+                    [ individuo.getCromossomos().get(i) - 1 ]
+                    [ individuo.getCromossomos().get(i + 1) - 1 ];
+        }
+        
+        individuo.setFuncaoObjetivo(custo);
+        
+    }
+    
     @Override
     public String toString() {
         return "Problema{" + "nomeDoArquivo=" + nomeDoArquivo + ", nomeDaInstancia=" + nomeDaInstancia + ", dimensao=" + dimensao + ", coordenadas=" + coordenadas + ", distancias=" + distancias + '}';
