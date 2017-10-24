@@ -21,6 +21,7 @@ public class Individuo implements Comparable<Individuo> {
     
     public Individuo(Integer dimensao) {
         this.dimensao = dimensao;
+        this.cromossomos = new ArrayList<>();
     }
 
     public ArrayList<Integer> getCromossomos() {

@@ -52,7 +52,7 @@ public class Populacao {
         this.individuos = new ArrayList<>();
         
         for(int i = 1; i <= this.tamanho; i++) {
-            Individuo individuo = new Individuo(tamanho);
+            Individuo individuo = new Individuo(this.problema.dimensao);
             individuo.criar();
             this.individuos.add(individuo);            
         }

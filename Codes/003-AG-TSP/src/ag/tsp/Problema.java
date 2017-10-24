@@ -20,6 +20,7 @@ public class Problema {
     
     String nomeDoArquivo;
     String nomeDaInstancia;
+    String funcaoCalculo;
     int dimensao;
     
     Double[][] coordenadas;
@@ -61,6 +62,8 @@ public class Problema {
             
             // Funcao de Calculo (ATT, EUC_2D, ...)
             linha = br.readLine();
+            dados = linha.split(":");
+            funcaoCalculo = dados[1].trim();
             // Cabecalho
             linha = br.readLine();
             
@@ -91,6 +94,54 @@ public class Problema {
     }
     
     public void calcularDistancias() {
+        
+        switch(this.funcaoCalculo) {
+            case "ATT":
+                this.calcularDistanciasATT();
+                break;
+            case "EUC_2D":
+                this.calcularDistanciasEUC2D();
+                break;
+            default:
+                throw new UnsupportedOperationException("Função não implementada: " + this.funcaoCalculo);
+                        
+        }
+        
+    }
+    
+    // Adaptado de: https://github.com/MOEAFramework/MOEAFramework/blob/master/examples/org/moeaframework/examples/ga/tsplib/PseudoEuclideanDistance.java
+    private void calcularDistanciasATT() {
+        // ATT - Pseudo EUC
+        Double dist;
+        for(int i = 0; i < this.dimensao; i++ ) {
+            for(int j = 0; j < this.dimensao; j++) {
+                if (i == j)
+                    dist = 0.0;
+                else {
+                    // Px - Qx
+                    dist = Math.pow(this.coordenadas[i][0] 
+                            - this.coordenadas[j][0]  , 2);
+                    // Py - Qy
+                    dist += Math.pow(this.coordenadas[i][1] 
+                            - this.coordenadas[j][1]  , 2);
+                    dist = Math.sqrt(dist / 10.0);
+
+                    double t = Math.round(dist);
+                    
+                    if ( t < dist ) {
+                        dist = t + 1.0;
+                    } else {
+                        dist = t;
+                    }
+                    
+                }
+                
+                this.distancias[i][j] = dist;
+            }
+        }        
+    }
+    
+    private void calcularDistanciasEUC2D() {
         // EUC_2D
         Double dist;
         for(int i = 0; i < this.dimensao; i++ ) {
@@ -124,10 +175,10 @@ public class Problema {
         individuo.setFuncaoObjetivo(custo);
         
     }
-    
+
     @Override
     public String toString() {
-        return "Problema{" + "nomeDoArquivo=" + nomeDoArquivo + ", nomeDaInstancia=" + nomeDaInstancia + ", dimensao=" + dimensao + ", coordenadas=" + coordenadas + ", distancias=" + distancias + '}';
+        return "Problema{" + "nomeDoArquivo=" + nomeDoArquivo + ", nomeDaInstancia=" + nomeDaInstancia + ", funcaoCalculo=" + funcaoCalculo + ", dimensao=" + dimensao + ", coordenadas=" + coordenadas + ", distancias=" + distancias + '}';
     }
-    
+        
 }
