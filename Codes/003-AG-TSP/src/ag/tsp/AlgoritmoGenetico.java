@@ -5,6 +5,8 @@
  */
 package ag.tsp;
 
+import com.sun.xml.internal.bind.v2.runtime.reflect.Lister;
+import java.util.Collections;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -146,17 +148,60 @@ public class AlgoritmoGenetico {
 
                     crossoverOX(this.populacao.getIndividuos().get(pai1), this.populacao.getIndividuos().get(pai2), filho1, filho2);
 
-                    System.out.println(this.populacao.getIndividuos().get(pai1));
-                    System.out.println(this.populacao.getIndividuos().get(pai2));
-                    System.out.println(filho1);
-                    System.out.println(filho2);
+//                    System.out.println(this.populacao.getIndividuos().get(pai1));
+//                    System.out.println(this.populacao.getIndividuos().get(pai2));
+//                    System.out.println(filho1);
+//                    System.out.println(filho2);
                     
-                    System.exit(0);
+                    mutacaoSWAP(filho1);
+                    mutacaoSWAP(filho2);
+
+//                    System.out.println(filho1);
+//                    System.out.println(filho2);
+//                    
+//                    System.exit(0);
+    
+                   // Avaliar descendentes
+                   problema.calcularFuncaoObjetivo(filho1);
+                   problema.calcularFuncaoObjetivo(filho2);
+                   
+                   // Inserir na nova populacao
+                   novaPopulacao.getIndividuos().add(filho1);
+                   novaPopulacao.getIndividuos().add(filho2);
 
                 }
 
             }
-
+            
+            // Definir sobreviventes - pop corrente + descendentes
+            // Combinar POP+NovaPOP
+            populacao.getIndividuos().addAll(novaPopulacao.getIndividuos());
+            // Ordenar individuos
+            Collections.sort(populacao.getIndividuos());
+            // Cortar no tamanho da populacao
+            populacao.getIndividuos()
+                    .subList(tamPop, populacao.getIndividuos().size()).clear();
+            
+            // Melhor solucao corrente
+            if (populacao.getMelhorIndividuo()
+                    .getFuncaoObjetivo() <
+                this.getMelhorSolucao()
+                     .getFuncaoObjetivo()) {
+                try {
+                    this.setMelhorSolucao((Individuo)
+                            populacao.getMelhorIndividuo()
+                                    .clone());
+                } catch (CloneNotSupportedException ex) {
+                    Logger.getLogger(AlgoritmoGenetico.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+            }
+                
+            
+            System.out.println("Gen = " + gen +
+                    "\tFO = " + this.getMelhorSolucao().getFuncaoObjetivo() +
+                    "\tPop = " + populacao.getIndividuos().size());            
+            
         }
 
     }
@@ -177,27 +222,28 @@ public class AlgoritmoGenetico {
 //            i = j;
 //            j = aux;
 //        }
+
         // Parte central entre I e J
-        filho1.getCromossomos().addAll(i, pai1.getCromossomos().subList(i, j));
-        filho2.getCromossomos().addAll(i, pai2.getCromossomos().subList(i, j));
+        filho1.getCromossomos().addAll(pai1.getCromossomos().subList(i, j));
+        filho2.getCromossomos().addAll(pai2.getCromossomos().subList(i, j));
 
         // Copiar de P2 para F1
         int idx = j;
         int k = j;
 
-        while (k < tamPop) {
+        while (k < problema.dimensao) {
             if (!filho1.getCromossomos().contains(pai2.getCromossomos().get(k))) {
-                filho1.getCromossomos().add(idx, pai2.getCromossomos().get(k));
+                filho1.getCromossomos().add(pai2.getCromossomos().get(k));
                 idx++;
 
-                if (idx == tamPop) {
+                if (idx == problema.dimensao) {
                     break;
                 }
 
             }
 
             k++;
-            if (k == tamPop) {
+            if (k == problema.dimensao) {
                 k = 0;
             }
 
@@ -206,12 +252,12 @@ public class AlgoritmoGenetico {
         idx = 0;
         k = 0;
 
-        while (k < i) {
+        while (k < problema.dimensao) {
             if (!filho1.getCromossomos().contains(pai2.getCromossomos().get(k))) {
                 filho1.getCromossomos().add(idx, pai2.getCromossomos().get(k));
                 idx++;
 
-                if (idx == i) {
+                if (idx == problema.dimensao                                    || filho1.getCromossomos().size() == problema.dimensao) {
                     break;
                 }
 
@@ -225,19 +271,19 @@ public class AlgoritmoGenetico {
         idx = j;
         k = j;
 
-        while (k < tamPop) {
+        while (k < problema.dimensao) {
             if (!filho2.getCromossomos().contains(pai1.getCromossomos().get(k))) {
-                filho2.getCromossomos().add(idx, pai1.getCromossomos().get(k));
+                filho2.getCromossomos().add(pai1.getCromossomos().get(k));
                 idx++;
 
-                if (idx == tamPop) {
+                if (idx == problema.dimensao) {
                     break;
                 }
 
             }
 
             k++;
-            if (k == tamPop) {
+            if (k == problema.dimensao) {
                 k = 0;
             }
 
@@ -246,12 +292,12 @@ public class AlgoritmoGenetico {
         idx = 0;
         k = 0;
 
-        while (k < i) {
+        while (k < problema.dimensao) {
             if (!filho2.getCromossomos().contains(pai1.getCromossomos().get(k))) {
                 filho2.getCromossomos().add(idx, pai1.getCromossomos().get(k));
                 idx++;
 
-                if (idx == i) {
+                if (idx == problema.dimensao || filho2.getCromossomos().size() == problema.dimensao) {
                     break;
                 }
 
@@ -262,5 +308,27 @@ public class AlgoritmoGenetico {
         }
 
     }
+    
+    
+    private void mutacaoSWAP(Individuo individuo) {
+        
+        Random rnd = new Random();
+        
+        // Verifica o processo de mutacao para cada gene do cromossomo
+        for(int i = 0; i < individuo.getCromossomos().size(); i++) {
+            if (rnd.nextDouble() <= pMutacao) {
+                
+                int j;
+                do {
+                    j = rnd.nextInt(problema.dimensao);
+                } while (i == j);
+                
+                Collections.swap(
+                    individuo.getCromossomos(), i, j);
+            }
+        }
+        
+    }
 
 }
+
