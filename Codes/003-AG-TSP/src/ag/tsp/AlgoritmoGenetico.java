@@ -20,6 +20,7 @@ public class AlgoritmoGenetico {
     int tamPop;
     double pCrossover;
     double pMutacao;
+    double pBuscaLocal;
     int geracoes;
 
     Individuo melhorSolucao;
@@ -29,10 +30,11 @@ public class AlgoritmoGenetico {
 
     Problema problema;
 
-    public AlgoritmoGenetico(int tamPop, double pCrossover, double pMutacao, int geracoes, Problema problema) {
+    public AlgoritmoGenetico(int tamPop, double pCrossover, double pMutacao, double pBuscaLocal, int geracoes, Problema problema) {
         this.tamPop = tamPop;
         this.pCrossover = pCrossover;
         this.pMutacao = pMutacao;
+        this.pBuscaLocal = pBuscaLocal;
         this.geracoes = geracoes;
         this.problema = problema;
     }
@@ -164,6 +166,14 @@ public class AlgoritmoGenetico {
                    // Avaliar descendentes
                    problema.calcularFuncaoObjetivo(filho1);
                    problema.calcularFuncaoObjetivo(filho2);
+                   
+                   // Busca local
+                   if (rnd.nextDouble() <= this.pBuscaLocal) {
+                       buscaLocal(filho1);
+                   }
+                   if (rnd.nextDouble() <= this.pBuscaLocal) {
+                       buscaLocal(filho2);
+                   }
                    
                    // Inserir na nova populacao
                    novaPopulacao.getIndividuos().add(filho1);
@@ -328,6 +338,48 @@ public class AlgoritmoGenetico {
             }
         }
         
+    }
+    
+    public void buscaLocal(Individuo individuo) {
+          
+    //1) remover u e inserir após v;
+    //2) remover u e x e inserir u e x após v;
+    //3) remover u e x e inserir x e u após v; (posições invertidas)
+    //4) trocar u e v;
+    //5) troca u e x com v;
+    //6) troca u e x com v e y;
+    
+        //4) trocar u e v;
+        // SWAP
+        // First improvement
+        
+        double foInicial = individuo.getFuncaoObjetivo();
+        
+        for(int u = 0; u < individuo.getCromossomos().size() - 1; u++) {
+            for(int v = u + 1; v < individuo.getCromossomos().size(); v++) {
+                
+                // Opera SWAP
+                Collections.swap(individuo.getCromossomos(), u, v);
+                // Calcular FO - Delta
+                problema.calcularFuncaoObjetivo(individuo);
+                
+                // Se existe melhora
+                if ( individuo.getFuncaoObjetivo() < foInicial ) {
+                    // Encerra - first improvement
+//                    System.out.println("Melhora - de: " + foInicial + "\tpara: " + individuo.getFuncaoObjetivo());
+                    return;
+                } else {
+                    // Desfazer a troca
+                    Collections.swap(individuo.getCromossomos(), u, v);
+                }
+                
+            }
+        }
+        
+        // Retorna valor original da FO
+        // Nao aconteceu nenhuma mudanca
+        individuo.setFuncaoObjetivo(foInicial);
+    
     }
 
 }

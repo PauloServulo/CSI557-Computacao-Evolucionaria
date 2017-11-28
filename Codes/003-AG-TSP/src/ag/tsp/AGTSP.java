@@ -16,7 +16,7 @@ public class AGTSP {
      */
     public static void main(String[] args) {
         
-        Problema tsp = new Problema("/Users/fernando/Dropbox/Dados/Desenvolvimento/Netbeans/CSI557-Computacao-Evolucionaria/Codes/instances/tsplib/att48.tsp");
+        Problema tsp = new Problema("/Users/fernando/Dropbox/Dados/Desenvolvimento/Netbeans/CSI557-Computacao-Evolucionaria/Codes/instances/tsplib/berlin52.tsp");
         System.out.println(tsp);
         
         //Individuo individuo = new Individuo(tsp.dimensao); 
@@ -24,7 +24,7 @@ public class AGTSP {
         
         //tsp.calcularFuncaoObjetivo(individuo);
         //System.out.println(individuo);
-        AlgoritmoGenetico ag = new AlgoritmoGenetico(100, 0.8, 0.05, 100, tsp);
+        AlgoritmoGenetico ag = new AlgoritmoGenetico(100, 0.8, 0.05, 0.8, 1500, tsp);
         ag.executar();
         
     }
