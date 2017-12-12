@@ -19,7 +19,7 @@ public class PopulacaoDouble extends Populacao<Double> {
     int nvar;
 
     public PopulacaoDouble() {
-        
+        this.individuos = new ArrayList<>();
     }
     
     public PopulacaoDouble(Problema problema, double min, double max, int nvar, int tamanho) {
@@ -31,7 +31,7 @@ public class PopulacaoDouble extends Populacao<Double> {
     }
     
     @Override
-    void criar() {
+    public void criar() {
         individuos = new ArrayList<>();
         
         for (int i = 0; i < this.getTamanho(); i++) {
