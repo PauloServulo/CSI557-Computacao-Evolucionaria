@@ -71,7 +71,7 @@ public class EvolutionEstrategy implements Metodo {
             }
 
             // ES(mu, lambda)
-            populacao.getIndividuos().clear();
+            // populacao.getIndividuos().clear();
             // ES(mu+lambda)
             populacao.getIndividuos()
                     .addAll(novaPopulacao.getIndividuos());

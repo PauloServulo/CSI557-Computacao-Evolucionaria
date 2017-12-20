@@ -26,6 +26,7 @@ public class IndividuoDouble implements Individuo<Double> {
         this.min = min;
         this.max = max;
         this.nvar = nvar;
+        this.cromossomos = new ArrayList<>();
     }
 
     public int getNvar() {
