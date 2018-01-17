@@ -172,12 +172,16 @@ public class ProblemaTSP implements Problema {
     public void calcularFuncaoObjetivo(Individuo individuo) {
         Double custo = 0.0;
         
+        try{
         for(int i = 0; i < this.dimensao - 1; i++) {
             custo += this.distancias
                     [ (int)individuo.getCromossomos().get(i) - 1 ]
                     [ (int)individuo.getCromossomos().get(i + 1) - 1 ];
         }
-        
+        }
+        catch(NullPointerException np) {
+            System.out.println(np);
+        }
         individuo.setFuncaoObjetivo(custo);
     }
 
