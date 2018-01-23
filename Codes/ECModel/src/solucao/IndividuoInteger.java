@@ -43,6 +43,14 @@ public class IndividuoInteger implements Individuo<Integer> {
         this.cromossomos = cromossomos;
     }
 
+    public Integer getDimensao() {
+        return dimensao;
+    }
+
+    public void setDimensao(Integer dimensao) {
+        this.dimensao = dimensao;
+    }
+    
     @Override
     public void criar() {
         this.cromossomos = new ArrayList<>();

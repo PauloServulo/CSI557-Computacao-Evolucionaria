@@ -20,8 +20,8 @@ public class DETSPPrincipal {
      */
     public static void main(String[] args) {
         
-        //Problema problema = new ProblemaTSP("/Users/fernando/Dropbox/Dados/Desenvolvimento/Netbeans/CSI557-Computacao-Evolucionaria/Codes/instances/tsplib/berlin52.tsp");
-        Problema problema = new ProblemaTSP("/home/fernando/Dropbox/Dados/Desenvolvimento/Netbeans/CSI557-Computacao-Evolucionaria/Codes/instances/tsplib/berlin52.tsp");
+        Problema problema = new ProblemaTSP("/Users/fernando/Dropbox/Dados/Desenvolvimento/Netbeans/CSI557-Computacao-Evolucionaria/Codes/instances/tsplib/berlin52.tsp");
+        //Problema problema = new ProblemaTSP("/home/fernando/Dropbox/Dados/Desenvolvimento/Netbeans/CSI557-Computacao-Evolucionaria/Codes/instances/tsplib/berlin52.tsp");
         
         double min = 0.0;
         double max = 1.0;
