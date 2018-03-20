@@ -122,6 +122,35 @@ public class Individuo {
     // Genótipo -> Fenótipo : Binário -> Real
     public void decodificar() {
         
+        this.decodificacao = new ArrayList<>();
+        this.variaveis = new ArrayList<>();
+
+
+       int valor;
+       Double real;
+       
+       for(int i = 0; i < this.getnVar(); i++) {
+       
+           valor = 0;
+           
+           for(int j = 0; j < this.getPrecisao(); j++) {
+               
+               valor += Math.pow(2, this.getPrecisao() - j - 1)
+                       * this.getCromossomos().get( i * this.getPrecisao() + j );
+               
+           }
+           
+           this.getDecodificacao().add(valor);
+           
+           real = (valor * ( this.getMaximo() - this.getMinimo() )
+                    / ( Math.pow(2, this.getPrecisao()) - 1.0 )) 
+                   + this.getMinimo();
+           
+           this.getVariaveis().add(real);
+           
+       }
+
+        
     }
     
     
