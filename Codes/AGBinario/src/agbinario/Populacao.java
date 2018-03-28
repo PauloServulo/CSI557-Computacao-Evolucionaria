@@ -40,6 +40,7 @@ public class Populacao {
         this.nVar = nVar;
         this.tamanho = tamanho;
         this.problema = problema;
+        this.individuos = new ArrayList<>();
     }
     
     public Integer getPrecisao() {

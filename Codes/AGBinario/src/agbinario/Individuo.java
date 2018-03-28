@@ -12,7 +12,7 @@ import java.util.Random;
  *
  * @author fernando
  */
-public class Individuo {
+public class Individuo implements Comparable<Individuo>{
     
     // Genotipo
     private ArrayList<Integer> cromossomos;
@@ -38,6 +38,7 @@ public class Individuo {
         this.minimo = minimo;
         this.maximo = maximo;
         this.nVar = nVar;
+        this.cromossomos = new ArrayList<>();
     }
 
     public ArrayList<Integer> getCromossomos() {
@@ -152,6 +153,10 @@ public class Individuo {
 
         
     }
-    
-    
+
+    @Override
+    public int compareTo(Individuo o) {
+        return this.getFuncaoObjetivo()
+                .compareTo(o.getFuncaoObjetivo());
+    }
 }
