@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package agbinario;
+package agreal;
 
 import java.util.Collections;
 import java.util.Random;
@@ -26,8 +26,6 @@ public class AlgoritmoGenetico {
     // Dados do problema
     // Problema - DeJong
     Problema problema;
-    // Precisão
-    Integer precisao;
     // Mínimo
     Double minimo;
     // Máximo
@@ -35,13 +33,12 @@ public class AlgoritmoGenetico {
     // Variáveis
     Integer nVariaveis;
 
-    public AlgoritmoGenetico(Integer tamanho, Double pCrossover, Double pMutacao, Integer geracoes, Problema problema, Integer precisao, Double minimo, Double maximo, Integer nVariaveis) {
+    public AlgoritmoGenetico(Integer tamanho, Double pCrossover, Double pMutacao, Integer geracoes, Problema problema, Double minimo, Double maximo, Integer nVariaveis) {
         this.tamanho = tamanho;
         this.pCrossover = pCrossover;
         this.pMutacao = pMutacao;
         this.geracoes = geracoes;
         this.problema = problema;
-        this.precisao = precisao;
         this.minimo = minimo;
         this.maximo = maximo;
         this.nVariaveis = nVariaveis;
@@ -57,8 +54,8 @@ public class AlgoritmoGenetico {
 
     public void executar() {
 
-        populacao = new Populacao(precisao, minimo, maximo, nVariaveis, tamanho, problema);
-        novaPopulacao = new Populacao(precisao, minimo, maximo, nVariaveis, tamanho, problema);
+        populacao = new Populacao(minimo, maximo, nVariaveis, tamanho, problema);
+        novaPopulacao = new Populacao(minimo, maximo, nVariaveis, tamanho, problema);
 
         // Criar a população
         populacao.criar();
@@ -84,15 +81,15 @@ public class AlgoritmoGenetico {
                         ind2 = rnd.nextInt(this.tamanho);
                     } while (ind1 == ind2);
 
-                    Individuo desc1 = new Individuo(precisao, minimo, maximo, nVariaveis);
-                    Individuo desc2 = new Individuo(precisao, minimo, maximo, nVariaveis);
+                    Individuo desc1 = new Individuo(minimo, maximo, nVariaveis);
+                    Individuo desc2 = new Individuo(minimo, maximo, nVariaveis);
 
                     // Progenitores
                     Individuo p1 = populacao.getIndividuos().get(ind1);
                     Individuo p2 = populacao.getIndividuos().get(ind2);
 
                     // Ponto de corte
-                    int corte = rnd.nextInt(p1.getCromossomos().size());
+                    int corte = rnd.nextInt(p1.getVariaveis().size());
 
                     // Descendente 1 -> Ind1_1 + Ind2_2;
                     crossoverUmPonto(p1, p2, desc1, corte);
@@ -102,9 +99,9 @@ public class AlgoritmoGenetico {
 
                     // Mutação
                     // Descendente 1
-                    mutacaoPorBit(desc1);
+                    mutacaoPorVariavel(desc1);
                     // Descendente 2
-                    mutacaoPorBit(desc2);
+                    mutacaoPorVariavel(desc2);
 
                     // Avaliar as novas soluções
                     problema.calcularFuncaoObjetivo(desc1);
@@ -145,30 +142,52 @@ public class AlgoritmoGenetico {
 
     private void crossoverUmPonto(Individuo ind1, Individuo ind2, Individuo descendente, int corte) {
 
+        // Crossover aritmetico - 1 ponto de corte
+        Random rnd = new Random();
+        Double alpha = rnd.nextDouble();
+        
         // Ind1_1
-        descendente.getCromossomos()
-                .addAll(ind1.getCromossomos().subList(0, corte));
+        // alpha * P1
+        for(int i = 0; i < corte; i++ ) {
+            Double valor = alpha * ind1.getVariaveis().get(i);
+            descendente.getVariaveis().add(valor);
+        }
 
         // Ind2_2
-        descendente.getCromossomos()
-                .addAll(ind2.getCromossomos().subList(corte, ind2.getCromossomos().size()));
+        // (1 - alpha) * P2
+        for(int i = corte; i < this.nVariaveis; i++ ) {
+            Double valor = (1.0 - alpha) * ind2.getVariaveis().get(i);
+            descendente.getVariaveis().add(valor);
+        }
+        
 
     }
 
-    private void mutacaoPorBit(Individuo individuo) {
+    private void mutacaoPorVariavel(Individuo individuo) {
 
         Random rnd = new Random();
 
-        for (int i = 0; i < individuo.getCromossomos().size(); i++) {
+        for (int i = 0; i < individuo.getVariaveis().size(); i++) {
             if (rnd.nextDouble() <= this.pMutacao) {
-                int bit = individuo.getCromossomos().get(i);
-                if (bit == 0) {
-                    bit = 1;
-                } else {
-                    bit = 0;
+                
+                // Mutacao aritmetica
+                // Multiplicar rnd e inverter ou nao o sinal
+                Double valor = individuo.getVariaveis().get(i);
+                // Multiplica por rnd
+                valor *= rnd.nextDouble();
+                
+                // Inverter o sinal
+                if(!rnd.nextBoolean()) {
+                    valor = -valor;
                 }
-
-                individuo.getCromossomos().set(i, bit);
+                
+                if (valor >= this.minimo 
+                        && valor <= this.maximo) {
+                individuo.getVariaveis().set(i, valor);
+                
+                }                
+                
+                
             }
         }
 
