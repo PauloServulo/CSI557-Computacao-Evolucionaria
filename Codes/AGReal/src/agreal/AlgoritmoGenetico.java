@@ -52,7 +52,7 @@ public class AlgoritmoGenetico {
         return melhorSolucao;
     }
 
-    public void executar() {
+    public Double executar() {
 
         populacao = new Populacao(minimo, maximo, nVariaveis, tamanho, problema);
         novaPopulacao = new Populacao(minimo, maximo, nVariaveis, tamanho, problema);
@@ -122,21 +122,21 @@ public class AlgoritmoGenetico {
             // Eliminar os demais individuos - criterio: tamanho da população
             populacao.getIndividuos()
                     .subList(this.tamanho,
-                       populacao.getIndividuos().size())
+                            populacao.getIndividuos().size())
                     .clear();
 
             // Limpa a nova população para a geração seguinte
             novaPopulacao.getIndividuos().clear();
 
             // Imprimir a situacao atual
-            System.out.println("Gen = " + g +
-                    "\tCusto = "
-                    + populacao.getIndividuos().get(0).getFuncaoObjetivo());
-
+//            System.out.println("Gen = " + g +
+//                    "\tCusto = "
+//                    + populacao.getIndividuos().get(0).getFuncaoObjetivo());
         }
 
-        System.out.println("Melhor resultado: ");
-        System.out.println(populacao.getIndividuos().get(0).getVariaveis());
+//        System.out.println("Melhor resultado: ");
+//        System.out.println(populacao.getIndividuos().get(0).getVariaveis());
+        return populacao.getIndividuos().get(0).getFuncaoObjetivo();
 
     }
 
@@ -145,21 +145,20 @@ public class AlgoritmoGenetico {
         // Crossover aritmetico - 1 ponto de corte
         Random rnd = new Random();
         Double alpha = rnd.nextDouble();
-        
+
         // Ind1_1
         // alpha * P1
-        for(int i = 0; i < corte; i++ ) {
+        for (int i = 0; i < corte; i++) {
             Double valor = alpha * ind1.getVariaveis().get(i);
             descendente.getVariaveis().add(valor);
         }
 
         // Ind2_2
         // (1 - alpha) * P2
-        for(int i = corte; i < this.nVariaveis; i++ ) {
+        for (int i = corte; i < this.nVariaveis; i++) {
             Double valor = (1.0 - alpha) * ind2.getVariaveis().get(i);
             descendente.getVariaveis().add(valor);
         }
-        
 
     }
 
@@ -169,25 +168,24 @@ public class AlgoritmoGenetico {
 
         for (int i = 0; i < individuo.getVariaveis().size(); i++) {
             if (rnd.nextDouble() <= this.pMutacao) {
-                
+
                 // Mutacao aritmetica
                 // Multiplicar rnd e inverter ou nao o sinal
                 Double valor = individuo.getVariaveis().get(i);
                 // Multiplica por rnd
                 valor *= rnd.nextDouble();
-                
+
                 // Inverter o sinal
-                if(!rnd.nextBoolean()) {
+                if (!rnd.nextBoolean()) {
                     valor = -valor;
                 }
-                
-                if (valor >= this.minimo 
+
+                if (valor >= this.minimo
                         && valor <= this.maximo) {
-                individuo.getVariaveis().set(i, valor);
-                
-                }                
-                
-                
+                    individuo.getVariaveis().set(i, valor);
+
+                }
+
             }
         }
 

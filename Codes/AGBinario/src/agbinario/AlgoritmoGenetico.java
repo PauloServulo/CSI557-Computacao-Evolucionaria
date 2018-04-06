@@ -55,7 +55,7 @@ public class AlgoritmoGenetico {
         return melhorSolucao;
     }
 
-    public void executar() {
+    public Double executar() {
 
         populacao = new Populacao(precisao, minimo, maximo, nVariaveis, tamanho, problema);
         novaPopulacao = new Populacao(precisao, minimo, maximo, nVariaveis, tamanho, problema);
@@ -132,14 +132,15 @@ public class AlgoritmoGenetico {
             novaPopulacao.getIndividuos().clear();
 
             // Imprimir a situacao atual
-            System.out.println("Gen = " + g +
-                    "\tCusto = "
-                    + populacao.getIndividuos().get(0).getFuncaoObjetivo());
+//            System.out.println("Gen = " + g +
+//                    "\tCusto = "
+//                    + populacao.getIndividuos().get(0).getFuncaoObjetivo());
 
         }
 
-        System.out.println("Melhor resultado: ");
-        System.out.println(populacao.getIndividuos().get(0).getVariaveis());
+//        System.out.println("Melhor resultado: ");
+//        System.out.println(populacao.getIndividuos().get(0).getVariaveis());
+        return populacao.getIndividuos().get(0).getFuncaoObjetivo();
 
     }
 
