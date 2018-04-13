@@ -23,7 +23,7 @@ public class AGTSP {
         Integer tamanho = 50;
         Double pCrossover = 0.8;
         Double pMutacao = 0.05;
-        Integer geracoes = 100;
+        Integer geracoes = 1000;
         Integer nvar = problema.dimensao;
         
         AlgoritmoGenetico ag = new AlgoritmoGenetico(tamanho, pCrossover, pMutacao, geracoes, problema, nvar);

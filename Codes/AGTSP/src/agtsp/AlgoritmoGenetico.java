@@ -61,6 +61,9 @@ public class AlgoritmoGenetico {
         Random rnd = new Random();
         int ind1, ind2;
 
+        BuscaLocalCombinatorio buscaLocalCombinatorio
+                = new BuscaLocalCombinatorio(problema);
+
         // Enquanto o critério de parada não for satisfeito - Gerações
         for (int g = 1; g <= geracoes; g++) {
 
@@ -101,6 +104,11 @@ public class AlgoritmoGenetico {
                     problema.calcularFuncaoObjetivo(desc1);
                     problema.calcularFuncaoObjetivo(desc2);
 
+                    buscaLocalCombinatorio.buscaLocalSwap(desc1);
+                    buscaLocalCombinatorio.buscaLocalSwap(desc2);
+                    buscaLocalCombinatorio.buscaLocalRemoverUV(desc1);
+                    buscaLocalCombinatorio.buscaLocalRemoverUV(desc2);
+
                     // Inserir na nova população
                     novaPopulacao.getIndividuos().add(desc1);
                     novaPopulacao.getIndividuos().add(desc2);
@@ -123,8 +131,8 @@ public class AlgoritmoGenetico {
             novaPopulacao.getIndividuos().clear();
 
             // Imprimir a situacao atual
-            System.out.println("Gen = " + g +
-                    "\tCusto = "
+            System.out.println("Gen = " + g
+                    + "\tCusto = "
                     + populacao.getIndividuos().get(0).getFuncaoObjetivo());
         }
 
@@ -138,35 +146,34 @@ public class AlgoritmoGenetico {
 
         // Crossover OX
         Random rnd = new Random();
-        
+
         // Copiar Parte 1 do Ind1
         descendente.getVariaveis().addAll(ind1.getVariaveis().subList(0, corte));
-        
+
         int tam = descendente.getVariaveis().size();
         int i = corte;
-        
+
         // Completa a partir da Parte 2 do Individuo 2
         // Se necessário, a Parte 1 do Indivíduo 2 - até todas as cidades serem visitadas
         while (tam < this.nVariaveis) {
-            
-            if ( ! descendente.getVariaveis().contains( ind2.getVariaveis().get(i) ) ) {
+
+            if (!descendente.getVariaveis().contains(ind2.getVariaveis().get(i))) {
                 descendente.getVariaveis().add(ind2.getVariaveis().get(i));
                 tam++;
-                
+
                 if (tam == this.nVariaveis) {
                     break;
                 }
-                
+
             }
-            
+
             i++;
-            
-            if ( i == this.nVariaveis ) {
+
+            if (i == this.nVariaveis) {
                 i = 0;
             }
-            
-        }
 
+        }
 
     }
 
@@ -183,9 +190,9 @@ public class AlgoritmoGenetico {
                 do {
                     j = rnd.nextInt(this.nVariaveis);
                 } while (i == j);
-                
+
                 Collections.swap(individuo.getVariaveis(), i, j);
-                
+
             }
         }
 
