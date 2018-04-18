@@ -68,4 +68,12 @@ public class Individuo implements Comparable<Individuo>{
         return this.getFuncaoObjetivo()
                 .compareTo(o.getFuncaoObjetivo());
     }
+
+    @Override
+    public String toString() {
+        return "Individuo{" + "variaveis=" + variaveis + ", funcaoObjetivo=" + funcaoObjetivo + ", nVar=" + nVar + '}';
+    }
+    
+    
+    
 }

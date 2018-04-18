@@ -63,7 +63,7 @@ public class AlgoritmoGenetico {
 
         BuscaLocalCombinatorio buscaLocalCombinatorio
                 = new BuscaLocalCombinatorio(problema);
-
+        
         // Enquanto o critério de parada não for satisfeito - Gerações
         for (int g = 1; g <= geracoes; g++) {
 
@@ -104,11 +104,9 @@ public class AlgoritmoGenetico {
                     problema.calcularFuncaoObjetivo(desc1);
                     problema.calcularFuncaoObjetivo(desc2);
 
-                    buscaLocalCombinatorio.buscaLocalSwap(desc1);
-                    buscaLocalCombinatorio.buscaLocalSwap(desc2);
-                    buscaLocalCombinatorio.buscaLocalRemoverUV(desc1);
-                    buscaLocalCombinatorio.buscaLocalRemoverUV(desc2);
-
+                    buscaLocalCombinatorio.executar(desc1);
+                    buscaLocalCombinatorio.executar(desc2);
+                                                        
                     // Inserir na nova população
                     novaPopulacao.getIndividuos().add(desc1);
                     novaPopulacao.getIndividuos().add(desc2);
@@ -136,16 +134,20 @@ public class AlgoritmoGenetico {
                     + populacao.getIndividuos().get(0).getFuncaoObjetivo());
         }
 
+        System.out.println("FO: " + populacao.getIndividuos().get(0).getFuncaoObjetivo());
+        problema.calcularFuncaoObjetivo(populacao.getIndividuos().get(0));
+        
         System.out.println("Melhor resultado: ");
         System.out.println(populacao.getIndividuos().get(0).getVariaveis());
+        System.out.println("FO: " + populacao.getIndividuos().get(0).getFuncaoObjetivo());
         return populacao.getIndividuos().get(0).getFuncaoObjetivo();
-
+        
+        
     }
 
     private void crossoverUmPonto(Individuo ind1, Individuo ind2, Individuo descendente, int corte) {
 
         // Crossover OX
-        Random rnd = new Random();
 
         // Copiar Parte 1 do Ind1
         descendente.getVariaveis().addAll(ind1.getVariaveis().subList(0, corte));
