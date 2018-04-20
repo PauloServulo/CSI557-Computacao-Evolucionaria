@@ -67,7 +67,7 @@ public class ProblemaTSP implements Problema {
             // Cabecalho
             linha = br.readLine();
 
-            while( (linha = br.readLine()) != null ) {
+            while ((linha = br.readLine()) != null) {
 
                 if (linha.equals("EOF")) {
                     break;
@@ -78,9 +78,9 @@ public class ProblemaTSP implements Problema {
                 int id = Integer.parseInt(dados[0]);
 
                 // X
-                coordenadas[id-1][0] = Double.parseDouble(dados[1]);
+                coordenadas[id - 1][0] = Double.parseDouble(dados[1]);
                 // Y
-                coordenadas[id-1][1] = Double.parseDouble(dados[2]);
+                coordenadas[id - 1][1] = Double.parseDouble(dados[2]);
 
             }
 
@@ -95,7 +95,7 @@ public class ProblemaTSP implements Problema {
 
     public void calcularDistancias() {
 
-        switch(this.funcaoCalculo) {
+        switch (this.funcaoCalculo) {
             case "ATT":
                 this.calcularDistanciasATT();
                 break;
@@ -113,22 +113,22 @@ public class ProblemaTSP implements Problema {
     private void calcularDistanciasATT() {
         // ATT - Pseudo EUC
         Double dist;
-        for(int i = 0; i < this.dimensao; i++ ) {
-            for(int j = 0; j < this.dimensao; j++) {
-                if (i == j)
+        for (int i = 0; i < this.dimensao; i++) {
+            for (int j = 0; j < this.dimensao; j++) {
+                if (i == j) {
                     dist = 0.0;
-                else {
+                } else {
                     // Px - Qx
                     dist = Math.pow(this.coordenadas[i][0]
-                            - this.coordenadas[j][0]  , 2);
+                            - this.coordenadas[j][0], 2);
                     // Py - Qy
                     dist += Math.pow(this.coordenadas[i][1]
-                            - this.coordenadas[j][1]  , 2);
+                            - this.coordenadas[j][1], 2);
                     dist = Math.sqrt(dist / 10.0);
 
                     double t = Math.round(dist);
 
-                    if ( t < dist ) {
+                    if (t < dist) {
                         dist = t + 1.0;
                     } else {
                         dist = t;
@@ -147,53 +147,52 @@ public class ProblemaTSP implements Problema {
 
     A: The function "int nint (double x)" converts x into int format rounding to the nearest int value, except halfway cases are rounded to the int value larger in magnitude. This corresponds to the Fortran generic intrinsic function nint. But, rounding like "(int) (x+0.5)" should give the same results for TSPLIB problems.
     Actually, it is better to use just "int" as in the previous answer. */
-
     // https://github.com/bcamath-ds/OPLib/tree/master/instances
     // dij = (int) (sqrt( xd*xd + yd*yd) + 0.5);
-
     private int nint(double x) {
-      return ((int)(x + 0.5));
+        return ((int) (x + 0.5));
     }
 
     private void calcularDistanciasEUC2D() {
         // EUC_2D
         Double dist;
-        for(int i = 0; i < this.dimensao; i++ ) {
-            for(int j = 0; j < this.dimensao; j++) {
-                if (i == j)
+        for (int i = 0; i < this.dimensao; i++) {
+            for (int j = 0; j < this.dimensao; j++) {
+                if (i == j) {
                     dist = 0.0;
-                else {
+                } else {
                     // Px - Qx
                     dist = Math.pow(this.coordenadas[i][0]
-                            - this.coordenadas[j][0]  , 2);
+                            - this.coordenadas[j][0], 2);
                     // Py - Qy
                     dist += Math.pow(this.coordenadas[i][1]
-                            - this.coordenadas[j][1]  , 2);
+                            - this.coordenadas[j][1], 2);
                     dist = Math.sqrt(dist);
                 }
 
-                this.distancias[i][j] = (double)nint(dist);
+                this.distancias[i][j] = (double) nint(dist);
             }
         }
     }
-    
+
     @Override
     public String toString() {
         return "Problema{" + "nomeDoArquivo=" + nomeDoArquivo + ", nomeDaInstancia=" + nomeDaInstancia + ", funcaoCalculo=" + funcaoCalculo + ", dimensao=" + dimensao + ", coordenadas=" + coordenadas + ", distancias=" + distancias + '}';
     }
 
-   @Override
+    @Override
     public void calcularFuncaoObjetivo(Individuo individuo) {
         Double custo = 0.0;
 
-        try{
-        for(int i = 0; i < this.dimensao - 1; i++) {
-            custo += this.distancias
-                    [ (int)individuo.getCromossomos().get(i) - 1 ]
-                    [ (int)individuo.getCromossomos().get(i + 1) - 1 ];
-        }
-        }
-        catch(NullPointerException np) {
+        try {
+            for (int i = 0; i < this.dimensao - 1; i++) {
+                custo += this.distancias[(int) individuo.getCromossomos().get(i) - 1][(int) individuo.getCromossomos().get(i + 1) - 1];
+            }
+
+            // Close the TSP cicle - from last to first
+            custo += this.distancias[(int)individuo.getCromossomos().get(0) - 1][(int)individuo.getCromossomos().get(this.dimensao - 1) - 1];
+
+        } catch (NullPointerException np) {
             System.out.println(np);
         }
         individuo.setFuncaoObjetivo(custo);
