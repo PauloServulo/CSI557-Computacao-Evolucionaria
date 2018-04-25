@@ -5,6 +5,8 @@
  */
 package metodo;
 
+import java.util.Collections;
+import java.util.Random;
 import problema.Problema;
 import solucao.Individuo;
 import solucao.IndividuoDouble;
@@ -53,7 +55,7 @@ public class ESReal implements Metodo {
         PopulacaoDouble descendentes = new PopulacaoDouble();
         
         // Criterio de parada - numero de geracoes
-        for(int g = 1; g < this.geracoes; g++) {
+        for(int g = 1; g <= this.geracoes; g++) {
             
             // Para cada individuo, gerar lambda/mu descendentes
             for(int i = 0; i < populacao.getIndividuos().size(); i++) {
@@ -65,18 +67,74 @@ public class ESReal implements Metodo {
                     IndividuoDouble filho = (IndividuoDouble)populacao.getIndividuos().get(i).clone();
                     
                     // Aplicar mutacao
+                    mutacaoPorVariavel(filho);
                     
                     // Avaliar
+                    problema.calcularFuncaoObjetivo(filho);
                     
-                    // Inserir na nova populacao
+                    // Inserir na populacao de descendentes
+                    descendentes.getIndividuos().add(filho);
                     
                 }
                 
             }
             
+            // ES(mu, lambda)?
+            // Eliminar a populacao corrente
+            //populacao.getIndividuos().clear();
+            
+            // ES(mu + lambda)?
+            // Mu + Lambda
+            populacao.getIndividuos().addAll(descendentes.getIndividuos());
+            // Ordenar Mu+Lambda
+            Collections.sort(populacao.getIndividuos());
+            // Definir sobreviventes
+            populacao.getIndividuos()
+                    .subList(this.mu, populacao.getIndividuos().size()).clear();
+            // Limpar descendentes
+            descendentes.getIndividuos().clear();
+            
+            System.out.println("G = " + g 
+                    + "\t"
+                    + populacao.getMelhorIndividuo().getFuncaoObjetivo());
+                        
+            
+            
+            
         }
         
+      // Retornar o melhor individuo
+      return populacao.getMelhorIndividuo();
         
+    }
+    
+        private void mutacaoPorVariavel(Individuo individuo) {
+
+        Random rnd = new Random();
+
+        for (int i = 0; i < individuo.getCromossomos().size(); i++) {
+            if (rnd.nextDouble() <= this.pMutacao) {
+
+                // Mutacao aritmetica
+                // Multiplicar rnd e inverter ou nao o sinal
+                Double valor = (Double) individuo.getCromossomos().get(i);
+                // Multiplica por rnd
+                valor *= rnd.nextDouble();
+
+                // Inverter o sinal
+                if (!rnd.nextBoolean()) {
+                    valor = -valor;
+                }
+
+                if (valor >= this.minimo
+                        && valor <= this.maximo) {
+                    individuo.getCromossomos().set(i, valor);
+
+                }
+
+            }
+        }
+
     }
     
 }

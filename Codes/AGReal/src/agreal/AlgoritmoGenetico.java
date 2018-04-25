@@ -128,10 +128,10 @@ public class AlgoritmoGenetico {
             // Limpa a nova população para a geração seguinte
             novaPopulacao.getIndividuos().clear();
 
-            // Imprimir a situacao atual
-//            System.out.println("Gen = " + g +
-//                    "\tCusto = "
-//                    + populacao.getIndividuos().get(0).getFuncaoObjetivo());
+            //Imprimir a situacao atual
+            System.out.println("Gen = " + g +
+                    "\tCusto = "
+                    + populacao.getIndividuos().get(0).getFuncaoObjetivo());
         }
 
 //        System.out.println("Melhor resultado: ");
