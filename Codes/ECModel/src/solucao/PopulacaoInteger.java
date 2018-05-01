@@ -20,7 +20,7 @@ public class PopulacaoInteger extends Populacao<Integer> {
     }    
     
     @Override
-    void criar() {
+    public void criar() {
         this.individuos = new ArrayList<>();
         
         for(int i = 1; i <= this.tamanho; i++) {
