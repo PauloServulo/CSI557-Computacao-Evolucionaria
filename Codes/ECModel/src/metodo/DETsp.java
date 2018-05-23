@@ -6,22 +6,29 @@
 package metodo;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import problema.Problema;
 import solucao.Individuo;
 import solucao.IndividuoDouble;
+import solucao.IndividuoInteger;
 import solucao.PopulacaoDouble;
+import solucao.PopulacaoInteger;
 
 /**
  *
  * @author fernando
  */
-public class DEReal implements Metodo {
+public class DETsp implements Metodo {
 
     private Double minimo;
     private Double maximo;
-    private Problema problema;
+    private Problema problema; // TSP
 
     // Criterio de parada
     private Integer gmax;
@@ -34,7 +41,7 @@ public class DEReal implements Metodo {
     // Coeficiente de Crossover
     private Double Cr;
 
-    public DEReal(Double minimo, Double maximo, Problema problema, Integer gmax, Integer D, Integer Np, Double F, Double Cr) {
+    public DETsp(Double minimo, Double maximo, Problema problema, Integer gmax, Integer D, Integer Np, Double F, Double Cr) {
         this.minimo = minimo;
         this.maximo = maximo;
         this.problema = problema;
@@ -116,8 +123,14 @@ public class DEReal implements Metodo {
         PopulacaoDouble populacao = new PopulacaoDouble(this.problema, this.minimo, this.maximo, this.D, this.Np);
         populacao.criar();
 
+        // Populacao para representar o contexto combinatorio
+        PopulacaoInteger popTSP = new PopulacaoInteger(this.Np, this.problema);
+        
+        // Converter - representacao real para inteiro
+        this.converteRealParaInteiro(populacao, popTSP);
+        
         // Avaliar a populacao inicial
-        populacao.avaliar();
+        popTSP.avaliar();
 
         // Nova populacao
         PopulacaoDouble novaPopulacao = new PopulacaoDouble();
@@ -165,8 +178,18 @@ public class DEReal implements Metodo {
                 crossover(trial, target);
 
                 // Selecao
-                problema.calcularFuncaoObjetivo(trial);
+                IndividuoInteger trialTSP = this.converteRealParaInteiro(trial);
+                problema.calcularFuncaoObjetivo(trialTSP);
 
+                IndividuoInteger targetTSP = this.converteRealParaInteiro(target);
+                problema.calcularFuncaoObjetivo(targetTSP);
+                
+                // Busca local
+                // BL(trialTSP)
+                
+                trial.setFuncaoObjetivo(trialTSP.getFuncaoObjetivo());
+                target.setFuncaoObjetivo(targetTSP.getFuncaoObjetivo());
+                
                 if (trial.getFuncaoObjetivo() <= target.getFuncaoObjetivo()) {
                     novaPopulacao.getIndividuos().add(trial);
                 } else {
@@ -243,6 +266,56 @@ public class DEReal implements Metodo {
         }
 
         return valor;
+    }
+    
+    private void converteRealParaInteiro(PopulacaoDouble populacao, PopulacaoInteger popTSP) {
+     
+        popTSP.getIndividuos().clear();
+        
+        for(Individuo ind : populacao.getIndividuos()) {
+            
+            IndividuoInteger indTSP = this.converteRealParaInteiro((IndividuoDouble) ind);
+            popTSP.getIndividuos().add(indTSP);            
+            
+        }
+        
+    }
+    
+    private IndividuoInteger converteRealParaInteiro(IndividuoDouble individuo) {
+        
+        IndividuoInteger indTSP = new IndividuoInteger(this.D);       
+        indTSP.setCromossomos(new ArrayList<>(Arrays.asList(new Integer[this.D])));
+        
+        HashMap<Integer, Double> valores = new HashMap<>();
+        
+        for(int i = 0; i < this.D; i++) {
+            valores.put(i, individuo.getCromossomos().get(i));
+        }
+        
+        IndividuoDouble copiaValores = (IndividuoDouble) individuo.clone();
+
+        IndividuoDouble copiaPosicoes = (IndividuoDouble) individuo.clone();
+        
+        // Ordenar o cromossomo
+        Collections.sort(copiaValores.getCromossomos());
+        
+        int cliente = 1;
+        
+        for(int i = 0; i < this.D; i++) {
+            
+            // Recuperar a posicao em relacao ao valor
+            int posicao = copiaPosicoes.getCromossomos().indexOf(copiaValores.getCromossomos().get(i));
+            
+            indTSP.getCromossomos().set(posicao, cliente);
+            copiaValores.getCromossomos().set(posicao, Double.NaN);
+            cliente++;
+            
+        }
+        
+        indTSP.setFuncaoObjetivo(individuo.getFuncaoObjetivo());
+        
+        return indTSP;
+        
     }
 
 }
